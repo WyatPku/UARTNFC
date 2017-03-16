@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QtSerialPort/QSerialPort>
+#include <QMessageBox>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +19,15 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QSerialPort serial;
+
+private slots:
+
+    void on_openPortBtn_clicked();
+
+    void read_Com();
+
+    void on_SendBtn_clicked();
 };
 
 #endif // MAINWINDOW_H
