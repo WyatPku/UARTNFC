@@ -41,7 +41,7 @@ void MainWindow::on_openPortBtn_clicked()
 
 void MainWindow::read_Com()
 {
-    QByteArray temp=serial.read(1);
+    QByteArray temp=serial.read(1); //maxSize, if not that match, just return an empty QByteArray
     if(!temp.isEmpty())
     {
         ui->recvTextBrowser->insertPlainText("0x");
