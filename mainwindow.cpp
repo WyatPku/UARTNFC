@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "sprtpack.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -11,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    SPRTpack x(SPRTpack::Pack_PWR);
+    printf("%s", x.toHexString().toStdString().data());
 }
 
 void MainWindow::on_openPortBtn_clicked()
