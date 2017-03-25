@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "sprtpack.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(CommuCore& commuCore_, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    commuCore(commuCore_)
 {
     ui->setupUi(this);
 }
@@ -12,15 +12,21 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    SPRTpack x(SPRTpack::Pack_PWR);
-    printf("%s", x.toHexString().toStdString().data());
 }
 
 void MainWindow::on_openPortBtn_clicked()
 {
     if(ui->portNameComboBox->isEnabled())
     {
-        serial.setPortName(ui->portNameComboBox->currentText()); //like "COM6"
+        if (commuCore.OpenComInit(ui->portNameComboBox->currentText())) {
+            connect(&commuCore, SIGNAL(signal_ComByte(QByteArray)), this,
+                    SLOT(read_ComByte(QByteArray)));
+            ui->openPortBtn->setText("ClosePort");
+            ui->portNameComboBox->setDisabled(true);
+        } else {
+            QMessageBox::information(NULL, QString("Error"), QString("打开串口失败"));
+        }
+        /*serial.setPortName(ui->portNameComboBox->currentText()); //like "COM6"
         serial.setBaudRate(QSerialPort::Baud115200, QSerialPort::AllDirections);
         serial.setDataBits(QSerialPort::Data8);
         serial.setFlowControl(QSerialPort::NoFlowControl);
@@ -34,15 +40,17 @@ void MainWindow::on_openPortBtn_clicked()
             ui->portNameComboBox->setDisabled(true);
         } else {
             QMessageBox::information(NULL, QString("Error"), QString("打开串口失败"));
-        }
+        }*/
     } else {
         ui->openPortBtn->setText("OpenPort");
         ui->portNameComboBox->setEnabled(true);
-        serial.close();
+        commuCore.CloseCom();
+        disconnect(&commuCore, SIGNAL(signal_ComByte(QByteArray)), this,
+                   SLOT(read_ComByte(QByteArray)));
     }
 }
 
-void MainWindow::read_Com()
+/*void MainWindow::read_Com()
 {
     QByteArray temp=serial.read(1); //maxSize, if not that match, just return an empty QByteArray
     if(!temp.isEmpty())
@@ -51,9 +59,17 @@ void MainWindow::read_Com()
         ui->recvTextBrowser->insertPlainText(temp.toHex());
         ui->recvTextBrowser->insertPlainText(" ");
     }
+}*/
+
+void MainWindow::read_ComByte(QByteArray byteArray)
+{
+    ui->recvTextBrowser->insertPlainText("0x");
+    ui->recvTextBrowser->insertPlainText(byteArray.toHex());
+    ui->recvTextBrowser->insertPlainText(" ");
 }
 
 void MainWindow::on_SendBtn_clicked()
 {
-    serial.write(ui->sendTextEdit->toPlainText().toLatin1());
+    //serial.write(ui->sendTextEdit->toPlainText().toLatin1());
+    commuCore.serial_write(ui->sendTextEdit->toPlainText().toLatin1());
 }

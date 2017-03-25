@@ -1,6 +1,7 @@
 #ifndef USERCORE_H
 #define USERCORE_H
 
+#include <QString>
 #include <QObject>
 
 class UserCore : public QObject

@@ -37,7 +37,6 @@ public:
     static const char type_LongerPack = 'L';
 
     NFCpack();
-    static void DEBUGfunc();
 };
 
 #endif // NFCPACK_H

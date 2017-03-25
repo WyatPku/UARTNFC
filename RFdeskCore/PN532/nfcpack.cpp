@@ -4,8 +4,3 @@ NFCpack::NFCpack()
 {
 
 }
-
-void NFCpack::DEBUGfunc()
-{
-
-}

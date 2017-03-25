@@ -25,10 +25,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    sprtpack.cpp
+    mainwindow.cpp \
+    RFdeskCore/deskcore.cpp \
+    RFdeskCore/DIYPack/mesmanager.cpp \
+    RFdeskCore/PN532/nfcpack.cpp \
+    RFdeskCore/DIYPack/diypack.cpp \
+    RFdeskCore/commucore.cpp \
+    RFdeskCore/usercore.cpp \
+    debugwindow.cpp
 
 HEADERS  += mainwindow.h \
-    sprtpack.h
+    RFdeskCore/deskcore.h \
+    RFdeskCore/DIYPack/mesmanager.h \
+    RFdeskCore/PN532/nfcpack.h \
+    RFdeskCore/DIYPack/diypack.h \
+    RFdeskCore/commucore.h \
+    RFdeskCore/usercore.h \
+    debugwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    debugwindow.ui
+
+DISTFILES +=
