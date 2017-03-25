@@ -37,9 +37,18 @@ void MainWindow::on_openPortBtn_clicked()
 
 void MainWindow::read_ComByte(QByteArray byteArray)
 {
-    ui->recvTextBrowser->insertPlainText("0x");
+    int size = byteArray.size();
+    QByteArray hexArray = byteArray.toHex();
+    for (int i=0; i<size; ++i) {
+        ui->recvTextBrowser->insertPlainText("0x");
+        QString str(hexArray.at(2*i));
+        str += hexArray.at(2*i + 1);
+        ui->recvTextBrowser->insertPlainText(str);
+        ui->recvTextBrowser->insertPlainText(" ");
+    }
+    /*ui->recvTextBrowser->insertPlainText("0x");
     ui->recvTextBrowser->insertPlainText(byteArray.toHex());
-    ui->recvTextBrowser->insertPlainText(" ");
+    ui->recvTextBrowser->insertPlainText(" ");*/
 }
 
 void MainWindow::on_SendBtn_clicked()

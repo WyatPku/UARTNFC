@@ -25,7 +25,8 @@ bool CommuCore::OpenComInit(QString COM)
 
 void CommuCore::read_Com()
 {
-    QByteArray temp=serial.read(1); //maxSize, if not that match, just return an empty QByteArray
+    //QByteArray temp=serial.read(1); //maxSize, if not that match, just return an empty QByteArray
+    QByteArray temp = serial.readAll();
     if(!temp.isEmpty())
     {
         emit signal_ComByte(temp);
