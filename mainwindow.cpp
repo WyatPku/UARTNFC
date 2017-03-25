@@ -7,6 +7,8 @@ MainWindow::MainWindow(CommuCore& commuCore_, QWidget *parent) :
     commuCore(commuCore_)
 {
     ui->setupUi(this);
+    connect(&commuCore, SIGNAL(signal_ComByte(QByteArray)), this,
+            SLOT(read_ComByte(QByteArray)));
 }
 
 MainWindow::~MainWindow()
@@ -19,8 +21,7 @@ void MainWindow::on_openPortBtn_clicked()
     if(ui->portNameComboBox->isEnabled())
     {
         if (commuCore.OpenComInit(ui->portNameComboBox->currentText())) {
-            connect(&commuCore, SIGNAL(signal_ComByte(QByteArray)), this,
-                    SLOT(read_ComByte(QByteArray)));
+
             ui->openPortBtn->setText("ClosePort");
             ui->portNameComboBox->setDisabled(true);
         } else {
@@ -30,14 +31,12 @@ void MainWindow::on_openPortBtn_clicked()
         ui->openPortBtn->setText("OpenPort");
         ui->portNameComboBox->setEnabled(true);
         commuCore.CloseCom();
-        disconnect(&commuCore, SIGNAL(signal_ComByte(QByteArray)), this,
-                   SLOT(read_ComByte(QByteArray)));
     }
 }
 
 void MainWindow::read_ComByte(QByteArray byteArray)
 {
-    mesManager.insertByteArray(byteArray);
+    //mesManager.insertByteArray(byteArray);
     int size = byteArray.size();
     QByteArray hexArray = byteArray.toHex();
     for (int i=0; i<size; ++i) {

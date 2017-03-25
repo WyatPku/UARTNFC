@@ -21,8 +21,7 @@ inline bool judgeWhetherHex(const char& x) {
 
 void DebugWindow::on_pushButton_singleHexByte_clicked()
 {
-    QString str = ui->plainTextEdit_singleHexByte->
-            toPlainText();
+    QString str = ui->lineEdit_singleHexByte->text();
     if (str.length() != 4 || str.at(0) != '0' || str.at(1) != 'x' ||
             !judgeWhetherHex(str.at(2).toLatin1()) ||
             !judgeWhetherHex(str.at(3).toLatin1())) {
@@ -33,4 +32,12 @@ void DebugWindow::on_pushButton_singleHexByte_clicked()
     hexStr += str.at(3);
     QByteArray byteArray = QByteArray::fromHex(hexStr.toLatin1());
     commuCore.serial_write(byteArray);
+}
+
+void DebugWindow::on_pushButton_sendNFCmessage_clicked()
+{
+    QString str = ui->plainTextEdit_diyPackTest->toPlainText();
+    DiyPack diyPack(DiyPack::Pack_PN532);
+    diyPack.unpackDataAppend(str.toLatin1());
+    commuCore.serial_write(diyPack.generateByteArray());
 }

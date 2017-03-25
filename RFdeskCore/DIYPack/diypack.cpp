@@ -7,11 +7,15 @@ char DiyPack::shortSum(short x)
 
 void DiyPack::updateCheckSum()
 {
-    LengthCheck = 0xFFFF - Length;
-    HeadCheck = 0xFF - shortSum(Length) - shortSum(LengthCheck) -
-            shortSum(toAddr) - shortSum(fromAddr) - shortSum(CommandType) -
-            HeadCheck - DataCheck;
-    DataCheck = (char)0xFF;
+    Length = unpackedData.length();
+    LengthCheck = - Length;
+    HeadCheck = - shortSum(Length) - shortSum(LengthCheck) -
+            shortSum(toAddr) - shortSum(fromAddr) - shortSum(CommandType);
+    char DataSum = 0;
+    for (int i=0; i<Length; ++i) {
+        DataSum += unpackedData.at(i);
+    }
+    DataCheck = -DataSum;
 
 }
 
@@ -56,6 +60,31 @@ QString DiyPack::toHexString()
     return x;
 }
 
+QByteArray DiyPack::generateByteArray()
+{
+    updateCheckSum();
+    QByteArray a;
+    a.append((char)(Length>>8));
+    a.append((char)Length);
+    a.append((char)(LengthCheck>>8));
+    a.append((char)LengthCheck);
+    a.append((char)(toAddr>>8));
+    a.append((char)toAddr);
+    a.append((char)(fromAddr>>8));
+    a.append((char)fromAddr);
+    a.append((char)(CommandType>>8));
+    a.append((char)CommandType);
+    a.append(HeadCheck);
+    a.append(DataCheck);
+    a.append(unpackedData);
+    return a;
+}
+
+void DiyPack::unpackDataAppend(QByteArray a)
+{
+    unpackedData.append(a);
+}
+
 QString DiyPack::toQS(char c) {
     char str[6];
     sprintf(str, "0x%02X", (unsigned char)c);
@@ -76,4 +105,27 @@ void DiyPack::reset() {
 bool DiyPack::ifLengthMatch()
 {
     return Length + LengthCheck == 0;
+}
+
+bool DiyPack::ifMatchAll()
+{
+    if (Length + LengthCheck != 0) {
+        qDebug("长度校验和不匹配");
+        return false;
+    }
+    if (HeadCheck + shortSum(Length) + shortSum(LengthCheck) +
+            shortSum(toAddr) + shortSum(fromAddr) +
+            shortSum(CommandType) != 0) {
+        qDebug("头部校验和不匹配");
+        return false;
+    }
+    char DataSum = 0;
+    for (int i=0; i<Length; ++i) {
+        DataSum += unpackedData.at(i);
+    }
+    if (DataCheck + DataSum != 0) {
+        qDebug("数据校验和不匹配");
+        return false;
+    }
+    return true;
 }

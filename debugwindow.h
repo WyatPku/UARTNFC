@@ -6,6 +6,7 @@
 #include <iostream>
 using namespace std;
 #include "RFdeskCore/commucore.h"
+#include "RFdeskCore/DIYPack/diypack.h"
 
 namespace Ui {
 class DebugWindow;
@@ -21,6 +22,8 @@ public:
 
 private slots:
     void on_pushButton_singleHexByte_clicked();
+
+    void on_pushButton_sendNFCmessage_clicked();
 
 private:
     Ui::DebugWindow *ui;

@@ -18,31 +18,36 @@
 
 class DiyPack
 {
+private:
+    QString toQS(char c);
 public:
     QByteArray unpackedData; //data without head
     short Length;
     short LengthCheck;
-    short toAddr;
-    short fromAddr;
-    short CommandType;
-    char HeadCheck;
-    char DataCheck;
+    short toAddr; //0,1
+    short fromAddr; //2,3
+    short CommandType; //4,5
+    char HeadCheck; //6
+    char DataCheck; //7
     char shortSum(short x);
     void updateCheckSum();
-    QString toQS(char c);
 
-public:
     static const char Pack_PN532 = 'N'; //NFC 0x4E
     static const char Pack_PWR = 'P'; //Power 0x50
+
+    static const short Max_Length = 1500; //max 1500 byte
 
     DiyPack(char PackType, char SubCmdType = 0x00);
     DiyPack(void* nouse);
     ~DiyPack();
     QString toHexString(); //return in hex string
+    QByteArray generateByteArray();
+    void unpackDataAppend(QByteArray a);
     void reset();
 
     //judge the check
     bool ifLengthMatch();
+    bool ifMatchAll();
 };
 
 #endif // DIYPACK_H

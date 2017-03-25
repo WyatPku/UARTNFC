@@ -32,7 +32,9 @@ void MesManager::insertByte(char cx) {
         } else {
             diyPack.LengthCheck |= x;
             //then testwhether it fit
-            if (diyPack.ifLengthMatch()) {
+            if (diyPack.ifLengthMatch() &&
+                    diyPack.Length < diyPack.Max_Length &&
+                    diyPack.Length > 0) {
                 //next state
                 step = 0;
                 state = state_Head;
@@ -46,8 +48,67 @@ void MesManager::insertByte(char cx) {
         }
         break;
     case state_Head:
+        switch(step) {
+        case 0:
+            diyPack.toAddr = x;
+            diyPack.toAddr <<= 8;
+            break;
+        case 1:
+            diyPack.toAddr |= x;
+            break;
+        case 2:
+            diyPack.fromAddr = x;
+            diyPack.fromAddr <<= 8;
+            break;
+        case 3:
+            diyPack.fromAddr |= x;
+            break;
+        case 4:
+            diyPack.CommandType = x;
+            diyPack.CommandType <<= 8;
+            break;
+        case 5:
+            diyPack.CommandType |= x;
+            break;
+        case 6:
+            diyPack.HeadCheck = x;
+            break;
+        case 7:
+            diyPack.DataCheck = x;
+            state = state_Body;
+            step = -1;
+            if (diyPack.Length == 0) {
+                qDebug("received a diyPack!");
+                if (diyPack.ifMatchAll()) {
+                    qDebug("emit a received diyPack!");
+                    emit receiveDiyPack(diyPack);
+                } else {
+                    qDebug("throw out a wrong diyPack!");
+                    qDebug(diyPack.toHexString().toLatin1().data());
+                }
+                reset();
+            }
+            break;
+        }
+        ++step;
         break;
     case state_Body:
+        if (step < diyPack.Length - 1) {
+            diyPack.unpackedData.append(x);
+            ++step;
+        } else {
+            //emit a signal
+            diyPack.unpackedData.append(x);
+            qDebug("received a diyPack!");
+            if (diyPack.ifMatchAll()) {
+                qDebug("emit a received diyPack!");
+                emit receiveDiyPack(diyPack);
+            } else {
+                qDebug("throw out a wrong diyPack!");
+                qDebug(diyPack.toHexString().toLatin1().data());
+            }
+            reset();
+        }
         break;
     }
     qDebug(diyPack.toHexString().toLatin1().data());

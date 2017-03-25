@@ -2,6 +2,11 @@
 #include <QApplication>
 #include "RFdeskCore/commucore.h"
 #include "debugwindow.h"
+#include "RFdeskCore/deskcore.h"
+#include "RFdeskCore/usercore.h"
+
+#define As_Desk
+//#define AS_User
 
 int main(int argc, char *argv[])
 {
@@ -15,6 +20,11 @@ int main(int argc, char *argv[])
     MainWindow w(commuCore);
     w.show();
 
+#ifdef As_Desk
+    DeskCore deskCore;
+    deskCore.connect(&commuCore, SIGNAL(signal_ComByte(QByteArray)),
+            &deskCore, SLOT(read_ComByte(QByteArray)));
+#endif
 
     int returnValue = a.exec();
 
