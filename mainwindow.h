@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include <QtSerialPort/QSerialPort>
 #include <QMessageBox>
 #include <QDebug>
 #include "RFdeskCore/commucore.h"
@@ -21,7 +20,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    //QSerialPort serial;
     CommuCore& commuCore;
 
 private slots:
@@ -29,8 +27,6 @@ private slots:
     void read_ComByte(QByteArray byteArray);
 
     void on_openPortBtn_clicked();
-
-    //void read_Com();
 
     void on_SendBtn_clicked();
 };
