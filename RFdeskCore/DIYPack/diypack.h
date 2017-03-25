@@ -18,7 +18,7 @@
 
 class DiyPack
 {
-private:
+public:
     QByteArray unpackedData; //data without head
     short Length;
     short LengthCheck;
@@ -36,8 +36,13 @@ public:
     static const char Pack_PWR = 'P'; //Power 0x50
 
     DiyPack(char PackType, char SubCmdType = 0x00);
+    DiyPack(void* nouse);
     ~DiyPack();
     QString toHexString(); //return in hex string
+    void reset();
+
+    //judge the check
+    bool ifLengthMatch();
 };
 
 #endif // DIYPACK_H

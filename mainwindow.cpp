@@ -37,6 +37,7 @@ void MainWindow::on_openPortBtn_clicked()
 
 void MainWindow::read_ComByte(QByteArray byteArray)
 {
+    mesManager.insertByteArray(byteArray);
     int size = byteArray.size();
     QByteArray hexArray = byteArray.toHex();
     for (int i=0; i<size; ++i) {

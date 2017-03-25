@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include "RFdeskCore/commucore.h"
+#include "RFdeskCore/DIYPack/mesmanager.h"
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,7 @@ public:
 private:
     Ui::MainWindow *ui;
     CommuCore& commuCore;
+    MesManager mesManager;
 
 private slots:
 

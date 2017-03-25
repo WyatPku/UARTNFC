@@ -24,6 +24,12 @@ DiyPack::DiyPack(char PackType, char SubCmdType)
     CommandType = ((short)PackType << 8) + SubCmdType;
     updateCheckSum();
 }
+
+DiyPack::DiyPack(void* nouse)
+{
+    (void*) nouse;
+    reset();
+}
 DiyPack::~DiyPack() {
 
 }
@@ -43,7 +49,8 @@ QString DiyPack::toHexString()
     x += toQS(CommandType) + " ";
     x += toQS(HeadCheck) + " ";
     x += toQS(DataCheck) + " ";
-    for (int i=0; i<Length; ++i) {
+    int dataLen = unpackedData.length();
+    for (int i=0; i<dataLen; ++i) {
         x += toQS(unpackedData.at(i)) + " ";
     }
     return x;
@@ -53,4 +60,20 @@ QString DiyPack::toQS(char c) {
     char str[6];
     sprintf(str, "0x%02X", (unsigned char)c);
     return QString(str);
+}
+
+void DiyPack::reset() {
+    Length = 0;
+    LengthCheck = 0;
+    toAddr = 0;
+    fromAddr = 0;
+    CommandType = 0;
+    HeadCheck = 0;
+    DataCheck = 0;
+    unpackedData.clear();
+}
+
+bool DiyPack::ifLengthMatch()
+{
+    return Length + LengthCheck == 0;
 }

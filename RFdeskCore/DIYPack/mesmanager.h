@@ -3,6 +3,7 @@
 
 #include <QByteArray>
 #include <QString>
+#include <QObject>
 #include "diypack.h"
 
 /*
@@ -10,11 +11,23 @@
  *
  *
  */
-
-class MesManager
+class MesManager : public QObject
 {
+    Q_OBJECT
+private:
+    DiyPack diyPack;
+#define state_Length 1
+#define state_Head 2
+#define state_Body 3
+    int step;
+    int state; //
+    void reset();
 public:
-    MesManager();
+    explicit MesManager(QObject *parent = 0);
+    void insertByte(char x);
+    void insertByteArray(QByteArray byteArray);
+signals:
+    void receiveDiyPack(DiyPack p);
 };
 
 #endif // MESMANAGER_H
